@@ -8,7 +8,7 @@ app.use(express.json());
 
 // Routes
 app.get('/', (req, res) => {
-    res.send("Server chal raha hai 🚀");
+    res.send("Server chal raha hai ");
 });
 
 app.get('/api', (req, res) => {
