@@ -8,12 +8,12 @@ app.use(express.json());
 
 // Routes
 app.get('/', (req, res) => {
-    res.send("Server chal raha hai ");
+    res.send("Server chal raha hai staging");
 });
 
 app.get('/api', (req, res) => {
     res.json({
-        message: "API working on api endpoint",
+        message: "API working on api endpoint staging",
         status: true
     });
 });
@@ -22,7 +22,7 @@ app.get('/api/data', (req, res) => {
     const data = req.body;
 
     res.json({
-        message: "Data mil gaya 👍",
+        message: "Data mil gaya 👍 staging",
         receivedData: data
     });
 });
