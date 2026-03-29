@@ -1,4 +1,21 @@
 # Dev — branch: dev → K8s namespace: dev → image tag: dev-<sha>
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: dev.mergeai.in
+      paths:
+        - path: /
+          pathType: Prefix
+  # TLS (cert-manager / manual secret ke baad):
+  # tls:
+  #   - secretName: dev-mergeai-in-tls
+  #     hosts:
+  #       - dev.mergeai.in
+
 env:
   - name: NODE_ENV
     value: production
