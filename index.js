@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 
 app.get('/api', (req, res) => {
     res.json({
-        message: "API working on api endpoint dev",
+        message: "API working on api endpoint dev.",
         status: true
     });
 });
