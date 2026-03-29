@@ -15,7 +15,7 @@ app.get('/api', (req, res) => {
     res.json({
         message: "API working on api endpoint hello uat",
         status: true
-    });
+    }); 
 });
 
 app.get('/api/data', (req, res) => {
