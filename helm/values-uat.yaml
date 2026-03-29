@@ -18,7 +18,7 @@ env:
     value: "3000"
   - name: DEPLOY_ENV
     value: uat
-
+ 
 autoscaling:
   minReplicas: 2
   maxReplicas: 10
