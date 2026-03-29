@@ -12,52 +12,62 @@ env:
   IMAGE_NAME: chat-app
 
 jobs:
-  build:
+  build-and-push:
+    if: github.ref == 'refs/heads/dev'  # सिर्फ dev ब्रांच के लिए build
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Azure Login
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # 3️⃣ Set environment (branch name)
-      - name: Set ENV
-        run: echo "ENV_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
-
-      # 4️⃣ Login to ACR (robust fix 🔥)
-      - name: Login to ACR
+      - name: Set Image Tag
         run: |
-          az acr login --name $ACR_NAME
-          echo "ACR login successful"
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "IMAGE_TAG=dev-${SHORT_SHA}" >> $GITHUB_ENV
 
-      # 5️⃣ Build Docker Image
+      - name: Login to ACR
+        run: az acr login --name $ACR_NAME
+
       - name: Build Docker Image
         run: |
-          echo "Building image for $ENV_NAME..."
-          docker build \
-          -t $ACR_NAME.azurecr.io/$IMAGE_NAME:$ENV_NAME \
-          -t $ACR_NAME.azurecr.io/$IMAGE_NAME:latest .
+          echo "Building image: $IMAGE_TAG"
+          docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME:$IMAGE_TAG .
 
-      # 6️⃣ Push Docker Image
       - name: Push Docker Image
         run: |
           echo "Pushing image..."
-          docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:$ENV_NAME
-          docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
+          docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:$IMAGE_TAG
 
-      # 7️⃣ Verify Image in ACR
-      - name: Verify Image in ACR
-        run: |
-          az acr repository list --name $ACR_NAME --output table
-
-      # 8️⃣ Output image URL
-      - name: Image Info
+      - name: Output Image Info
         run: |
           echo "✅ Image pushed successfully:"
-          echo "$ACR_NAME.azurecr.io/$IMAGE_NAME:$ENV_NAME"
+          echo "$ACR_NAME.azurecr.io/$IMAGE_NAME:$IMAGE_TAG"
+
+  deploy:
+    if: github.ref != 'refs/heads/dev'  # dev के अलावा (uat, staging) के लिए deploy
+    runs-on: ubuntu-latest
+    needs: build-and-push  # dev build पर निर्भर है
+
+    steps:
+      - name: Set ENV
+        run: echo "ENV_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to ACR
+        run: az acr login --name $ACR_NAME
+
+      - name: Deploy (placeholder step)
+        run: |
+          echo "Deploying to $ENV_NAME environment..."
+          # यहाँ तुम Helm या AKS deployment कमांड लगा सकते हो।
+          # उदाहरण के लिए:
+          # helm upgrade --install your-app ./chart --set image.tag=$IMAGE_TAG --namespace=$ENV_NAME
