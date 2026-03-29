@@ -8,7 +8,7 @@ app.use(express.json());
 
 // Routes
 app.get('/', (req, res) => {
-    res.send("Server chal raha hai 🚀");
+    res.send("Server chal raha hai 🚀 dev");
 });
 
 app.get('/api', (req, res) => {
@@ -21,7 +21,7 @@ app.get('/api', (req, res) => {
 app.get('/api/data', (req, res) => {
     const data = req.body;
     res.json({
-        message: "Data mil gaya 👍",
+        message: "Data mil gaya 👍 dev",
         receivedData: data
     });
 });
