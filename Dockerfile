@@ -1,23 +1,23 @@
-# Use Node 20 (stable LTS)
+# Use fixed Node 20 version (stable build)
 FROM node:20.11-alpine
 
-# Set working directory
+# Create app directory
 WORKDIR /app
 
-# Copy package files first (for caching)
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies (only production)
+# Install dependencies (clean & fast)
 RUN npm ci --omit=dev
 
-# Copy remaining app code
+# Copy source code
 COPY . .
 
 # Set environment
 ENV NODE_ENV=production
 
-# Expose app port
+# Expose port
 EXPOSE 3000
 
-# Start application
+# Start app
 CMD ["node", "index.js"]
