@@ -20,7 +20,6 @@ app.get('/api', (req, res) => {
 
 app.get('/api/data', (req, res) => {
     const data = req.body;
-
     res.json({
         message: "Data mil gaya 👍",
         receivedData: data
