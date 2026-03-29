@@ -1,4 +1,16 @@
 # Staging — branch: staging → namespace: staging → image tag: staging-<sha>
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: staging.mergeai.in
+      paths:
+        - path: /
+          pathType: Prefix
+
 env:
   - name: NODE_ENV
     value: production

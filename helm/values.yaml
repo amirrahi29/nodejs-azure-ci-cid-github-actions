@@ -10,7 +10,7 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-# ClusterIP = sirf cluster ke andar. External IP ke liye LoadBalancer (AKS par Azure public IP).
+# Ingress ON: ClusterIP (traffic Ingress controller se aata hai). Ingress OFF: LoadBalancer se seedha IP.
 service:
   type: LoadBalancer
   port: 80
@@ -19,6 +19,16 @@ service:
   # Internal LB chahiye ho to:
   # annotations:
   #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+
+# AKS par pehle NGINX Ingress Controller install karo (ek baar cluster par), phir hosts DNS se usi EXTERNAL-IP par point karo.
+#  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+#  helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx --create-namespace
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts: []
+  tls: []
 
 resources:
   limits:
