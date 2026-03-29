@@ -9,10 +9,15 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# ClusterIP = sirf cluster ke andar. External IP ke liye LoadBalancer (AKS par Azure public IP).
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
   targetPort: 3000
+  annotations: {}
+  # Internal LB chahiye ho to:
+  # annotations:
+  #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 
 resources:
   limits:
