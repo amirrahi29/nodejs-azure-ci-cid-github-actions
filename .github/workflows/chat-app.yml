@@ -6,7 +6,7 @@ on:
       - dev
       - uat
       - staging
-
+ 
 env:
   ACR_NAME: ChatAppRegsistry 
   IMAGE_NAME: chat-app-imge
