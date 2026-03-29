@@ -8,7 +8,7 @@ on:
       - staging
 
 env:
-  ACR_NAME: chatappregistry   # ✅ your real ACR name
+  ACR_NAME: chatappregsistry
   IMAGE_NAME: chat-app
 
 jobs:
@@ -30,11 +30,13 @@ jobs:
       - name: Set ENV
         run: echo "ENV_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
-      # 4️⃣ Login to ACR
+      # 4️⃣ Login to ACR (robust fix 🔥)
       - name: Login to ACR
-        run: az acr login --name $ACR_NAME
+        run: |
+          az acr login --name $ACR_NAME
+          echo "ACR login successful"
 
-      # 5️⃣ Build & Tag Docker Image
+      # 5️⃣ Build Docker Image
       - name: Build Docker Image
         run: |
           echo "Building image for $ENV_NAME..."
@@ -49,7 +51,7 @@ jobs:
           docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:$ENV_NAME
           docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
 
-      # 7️⃣ Verify push (optional but useful)
+      # 7️⃣ Verify Image in ACR
       - name: Verify Image in ACR
         run: |
           az acr repository list --name $ACR_NAME --output table
