@@ -1,9 +1,9 @@
 # UAT — branch: uat → namespace: uat → image tag: uat-<sha>
 service:
-  type: ClusterIP
+  type: LoadBalancer
 
 ingress:
-  enabled: true
+  enabled: false
   className: nginx
   hosts:
     - host: uat.mergeai.in
