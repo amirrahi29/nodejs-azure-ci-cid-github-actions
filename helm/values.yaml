@@ -20,7 +20,7 @@ service:
   # annotations:
   #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 
-# AKS par pehle NGINX Ingress Controller install karo (ek baar cluster par), phir hosts DNS se usi EXTERNAL-IP par point karo.
+# Ingress tab on karo jab domain DNS ready ho + NGINX Ingress cluster par ho. Bina domain: values-* mein service=LoadBalancer, ingress.enabled=false.
 #  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 #  helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx --create-namespace
 ingress:
