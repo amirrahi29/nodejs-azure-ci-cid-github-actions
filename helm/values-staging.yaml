@@ -1,9 +1,9 @@
 # Staging — branch: staging → namespace: staging → image tag: staging-<sha>
 service:
-  type: ClusterIP
+  type: LoadBalancer
 
 ingress:
-  enabled: true
+  enabled: false
   className: nginx
   hosts:
     - host: staging.mergeai.in
