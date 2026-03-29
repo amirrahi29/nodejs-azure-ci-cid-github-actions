@@ -8,8 +8,8 @@ on:
       - staging
 
 env:
-  ACR_NAME: chatappregistry   # ✅ your real ACR name
-  IMAGE_NAME: chat-app
+  ACR_NAME: ChatAppRegsistry 
+  IMAGE_NAME: chat-app-imge
 
 jobs:
   build:
