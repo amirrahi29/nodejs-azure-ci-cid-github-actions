@@ -1,3 +1,4 @@
+# Base defaults — har environment ke liye helm/values-<dev|staging|uat>.yaml iske upar merge hota hai (CI se -f).
 replicaCount: 2
 
 image:

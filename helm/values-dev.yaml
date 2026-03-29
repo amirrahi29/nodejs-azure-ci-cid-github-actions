@@ -1,0 +1,12 @@
+# Dev — branch: dev → K8s namespace: dev → image tag: dev-<sha>
+env:
+  - name: NODE_ENV
+    value: production
+  - name: PORT
+    value: "3000"
+  - name: DEPLOY_ENV
+    value: dev
+
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 5

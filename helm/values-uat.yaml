@@ -1,0 +1,12 @@
+# UAT — branch: uat → namespace: uat → image tag: uat-<sha>
+env:
+  - name: NODE_ENV
+    value: production
+  - name: PORT
+    value: "3000"
+  - name: DEPLOY_ENV
+    value: uat
+
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 10

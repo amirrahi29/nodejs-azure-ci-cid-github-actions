@@ -1,0 +1,12 @@
+# Staging — branch: staging → namespace: staging → image tag: staging-<sha>
+env:
+  - name: NODE_ENV
+    value: production
+  - name: PORT
+    value: "3000"
+  - name: DEPLOY_ENV
+    value: staging
+
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 8

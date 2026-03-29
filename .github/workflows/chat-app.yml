@@ -1,11 +1,12 @@
+# Multi-env: dev / staging / uat branches → same AKS cluster, alag namespace + alag image tag + helm/values-<env>.yaml
 name: Build, Push & Deploy to AKS
 
 on:
   push:
     branches:
       - dev
-      - uat
       - staging
+      - uat
 
 env:
   ACR_NAME: chatappregsistry
@@ -79,14 +80,18 @@ jobs:
 
       - name: Helm upgrade (chat-app)
         run: |
+          NS='${{ needs.build-and-push.outputs.namespace }}'
           helm upgrade --install chat-app ./helm \
-            --namespace ${{ needs.build-and-push.outputs.namespace }} \
+            --namespace "$NS" \
             --create-namespace \
+            -f "helm/values-${NS}.yaml" \
             --set image.repository=${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }} \
             --set image.tag=${{ needs.build-and-push.outputs.image_tag }} \
             --wait --timeout 5m
 
       - name: Deploy summary
         run: |
+          echo "Environment: ${{ needs.build-and-push.outputs.namespace }}"
           echo "Namespace: ${{ needs.build-and-push.outputs.namespace }}"
+          echo "Values file: helm/values-${{ needs.build-and-push.outputs.namespace }}.yaml"
           echo "Image tag: ${{ needs.build-and-push.outputs.image_tag }}"
