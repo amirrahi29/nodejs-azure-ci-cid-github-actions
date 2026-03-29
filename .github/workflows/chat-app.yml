@@ -1,10 +1,8 @@
-name: Build & Push Docker Image
+name: Deploy to Staging
 
 on:
   push:
     branches:
-      - dev
-      - uat
       - staging
 
 env:
@@ -12,51 +10,10 @@ env:
   IMAGE_NAME: chat-app
 
 jobs:
-  build-and-push:
-    if: github.ref == 'refs/heads/dev'  # सिर्फ dev ब्रांच के लिए build
+  deploy-staging:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Set Image Tag
-        run: |
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          echo "IMAGE_TAG=dev-${SHORT_SHA}" >> $GITHUB_ENV
-
-      - name: Login to ACR
-        run: az acr login --name $ACR_NAME
-
-      - name: Build Docker Image
-        run: |
-          echo "Building image: $IMAGE_TAG"
-          docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME:$IMAGE_TAG .
-
-      - name: Push Docker Image
-        run: |
-          echo "Pushing image..."
-          docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:$IMAGE_TAG
-
-      - name: Output Image Info
-        run: |
-          echo "✅ Image pushed successfully:"
-          echo "$ACR_NAME.azurecr.io/$IMAGE_NAME:$IMAGE_TAG"
-
-  deploy:
-    if: github.ref != 'refs/heads/dev'  # dev के अलावा (uat, staging) के लिए deploy
-    runs-on: ubuntu-latest
-    needs: build-and-push  # dev build पर निर्भर है
-
-    steps:
-      - name: Set ENV
-        run: echo "ENV_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
-
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -65,9 +22,14 @@ jobs:
       - name: Login to ACR
         run: az acr login --name $ACR_NAME
 
-      - name: Deploy (placeholder step)
+      - name: Get latest dev image tag
         run: |
-          echo "Deploying to $ENV_NAME environment..."
-          # यहाँ तुम Helm या AKS deployment कमांड लगा सकते हो।
-          # उदाहरण के लिए:
-          # helm upgrade --install your-app ./chart --set image.tag=$IMAGE_TAG --namespace=$ENV_NAME
+          LATEST_DEV_TAG=$(az acr repository show-tags --name $ACR_NAME --repository $IMAGE_NAME --query "[?starts_with(@, 'dev-')].[].@" --output tsv | sort | tail -n 1)
+          echo "IMAGE_TAG=$LATEST_DEV_TAG" >> $GITHUB_ENV
+          echo "Using image tag: $IMAGE_TAG"
+
+      - name: Deploy to Staging
+        run: |
+          echo "Deploying Staging with image $IMAGE_TAG..."
+          # यहाँ स्टेजिंग environment के लिए तुम्हारी कमांड होगी
+          # उदाहरण: helm upgrade --install staging-release ./chart --set image.tag=$IMAGE_TAG --namespace=staging
