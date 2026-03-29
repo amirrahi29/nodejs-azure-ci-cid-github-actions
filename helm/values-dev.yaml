@@ -12,7 +12,7 @@ ingress:
         - path: /
           pathType: Prefix
 
-env:
+env: 
   - name: NODE_ENV
     value: production
   - name: PORT
