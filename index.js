@@ -18,7 +18,7 @@ app.get('/api', (req, res) => {
     });
 });
 
-app.get('/api/data', (req, res) => {
+app.get('/api/data', (req, res) => { 
     const data = req.body;
 
     res.json({
