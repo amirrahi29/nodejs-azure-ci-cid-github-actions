@@ -1,4 +1,16 @@
 # UAT — branch: uat → namespace: uat → image tag: uat-<sha>
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: uat.mergeai.in
+      paths:
+        - path: /
+          pathType: Prefix
+
 env:
   - name: NODE_ENV
     value: production
